@@ -46,6 +46,10 @@ public final class SaturnContainerActivator implements BundleActivator
   private final ServiceListener listener;
   private ServiceTracker<LogReaderService, LogReaderService> tracker;
 
+  /**
+   * Construct an activator.
+   */
+
   public SaturnContainerActivator()
   {
     this.logger = new SaturnSLF4JLogReader();
@@ -98,7 +102,7 @@ public final class SaturnContainerActivator implements BundleActivator
 
     final Object[] current_readers = this.tracker.getServices();
     if (current_readers != null) {
-      for (int index = 0; index < current_readers.length; index++) {
+      for (int index = 0; index < current_readers.length; ++index) {
         final LogReaderService reader = (LogReaderService) current_readers[index];
 
         LOG.debug("adding a log listener to {}", reader);

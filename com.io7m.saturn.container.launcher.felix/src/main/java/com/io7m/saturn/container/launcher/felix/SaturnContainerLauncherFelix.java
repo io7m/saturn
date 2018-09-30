@@ -46,6 +46,10 @@ import static org.osgi.framework.Constants.FRAMEWORK_STORAGE;
 import static org.osgi.framework.Constants.FRAMEWORK_STORAGE_CLEAN;
 import static org.osgi.framework.Constants.FRAMEWORK_SYSTEMPACKAGES_EXTRA;
 
+/**
+ * A launcher of Felix containers.
+ */
+
 public final class SaturnContainerLauncherFelix implements SaturnContainerLauncherType
 {
   private static final Logger LOG = LoggerFactory.getLogger(SaturnContainerLauncherFelix.class);
@@ -57,6 +61,10 @@ public final class SaturnContainerLauncherFelix implements SaturnContainerLaunch
   {
 
   }
+
+  /**
+   * @return A new launcher
+   */
 
   public static SaturnContainerLauncherType createLauncher()
   {
@@ -80,7 +88,7 @@ public final class SaturnContainerLauncherFelix implements SaturnContainerLaunch
      * configuration value that passes in a Logger implementation.
      */
 
-    final FrameworkFactory frameworkFactory =
+    final FrameworkFactory frameworks =
       ServiceLoader.load(FrameworkFactory.class).iterator().next();
 
     final Map<String, Object> config = new HashMap<>();
@@ -99,7 +107,7 @@ public final class SaturnContainerLauncherFelix implements SaturnContainerLaunch
 
     LOG.debug("starting framework");
 
-    final Framework framework = frameworkFactory.newFramework(config_strings);
+    final Framework framework = frameworks.newFramework(config_strings);
     framework.start();
 
     final BundleContext c = framework.getBundleContext();

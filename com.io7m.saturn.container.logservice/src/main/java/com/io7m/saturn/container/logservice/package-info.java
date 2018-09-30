@@ -18,4 +18,10 @@
  * Saturn OSGi container (SLF4J log service)
  */
 
+@Header(
+  name = "Bundle-Activator",
+  value = "com.io7m.saturn.container.logservice.SaturnContainerActivator")
+
 package com.io7m.saturn.container.logservice;
+
+import org.osgi.annotation.bundle.Header;
