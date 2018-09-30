@@ -142,6 +142,16 @@
         <version>1.0.2</version>
       </dependency>
       <dependency>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>org.apache.felix.shell.remote</artifactId>
+        <version>1.2.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>org.apache.felix.shell</artifactId>
+        <version>1.0.0</version>
+      </dependency>
+      <dependency>
         <groupId>ch.qos.logback</groupId>
         <artifactId>logback-classic</artifactId>
         <version>${com.io7m.saturn.logback-classic.version}</version>

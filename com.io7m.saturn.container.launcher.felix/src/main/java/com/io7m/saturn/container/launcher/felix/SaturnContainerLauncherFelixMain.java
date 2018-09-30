@@ -18,6 +18,10 @@ package com.io7m.saturn.container.launcher.felix;
 
 import com.io7m.saturn.container.api.SaturnContainerDescription;
 import com.io7m.saturn.container.api.SaturnContainerDescriptions;
+import org.osgi.framework.FrameworkEvent;
+import org.osgi.framework.launch.Framework;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
 import java.nio.file.FileSystem;
@@ -31,6 +35,9 @@ import java.util.Properties;
 
 public final class SaturnContainerLauncherFelixMain
 {
+  private static final Logger LOG =
+    LoggerFactory.getLogger(SaturnContainerLauncherFelixMain.class);
+
   private SaturnContainerLauncherFelixMain()
   {
 
@@ -52,16 +59,30 @@ public final class SaturnContainerLauncherFelixMain
       throw new IllegalArgumentException("Usage: container.conf");
     }
 
-    final FileSystem filesystem = FileSystems.getDefault();
-    try (InputStream stream = Files.newInputStream(filesystem.getPath(args[0]).toAbsolutePath())) {
-      final Properties props = new Properties();
-      props.load(stream);
+    LOG.info("booting");
+
+    try {
+      final FileSystem filesystem = FileSystems.getDefault();
+      final Properties props;
+      try (InputStream stream = Files.newInputStream(filesystem.getPath(args[0]).toAbsolutePath())) {
+        props = new Properties();
+        props.load(stream);
+      }
 
       final SaturnContainerDescription description =
         SaturnContainerDescriptions.parse(filesystem, props);
 
-      SaturnContainerLauncherFelix.createLauncher()
-        .launch(description);
+      final Framework framework =
+        SaturnContainerLauncherFelix.createLauncher()
+          .launch(description);
+
+      final FrameworkEvent result = framework.waitForStop(0L);
+      final Throwable failure = result.getThrowable();
+      if (failure != null) {
+        throw new IllegalStateException(failure);
+      }
+    } finally {
+      LOG.info("exiting");
     }
   }
 }

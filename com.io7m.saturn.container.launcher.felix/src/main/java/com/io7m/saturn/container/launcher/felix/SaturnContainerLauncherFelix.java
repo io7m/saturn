@@ -119,7 +119,7 @@ public final class SaturnContainerLauncherFelix implements SaturnContainerLaunch
 
     final List<Bundle> bundles = new LinkedList<>();
     installSystemBundles(root_system, c, bundles);
-    installLibraryBundles(description, c, bundles);
+    installApplicationBundles(description, c, bundles);
     startAllBundles(bundles);
     return framework;
   }
@@ -165,16 +165,16 @@ public final class SaturnContainerLauncherFelix implements SaturnContainerLaunch
     }
   }
 
-  private static void installLibraryBundles(
+  private static void installApplicationBundles(
     final SaturnContainerDescription description,
     final BundleContext c,
     final List<Bundle> bundles)
     throws BundleException
   {
-    LOG.debug("installing library bundles");
+    LOG.debug("installing application bundles");
 
     if (description.bundles().isEmpty()) {
-      LOG.debug("no library bundles to install");
+      LOG.debug("no application bundles to install");
       return;
     }
 

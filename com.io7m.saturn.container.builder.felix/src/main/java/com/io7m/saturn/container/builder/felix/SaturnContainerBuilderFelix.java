@@ -65,8 +65,9 @@ public final class SaturnContainerBuilderFelix implements SaturnContainerBuilder
     for (final SaturnFelixSystemBundle jar : jars) {
       final Path output_path = system_dir.resolve(jar.jarName());
       try (OutputStream output = Files.newOutputStream(output_path)) {
-        try (InputStream input = SaturnContainerBuilderFelix.class.getResourceAsStream(jar.resourcePath())) {
-          LOG.trace("copy {} {} {}", type, jar.resourcePath(), output_path);
+        final String rpath = jar.resourcePath();
+        try (InputStream input = SaturnContainerBuilderFelix.class.getResourceAsStream(rpath)) {
+          LOG.trace("copy {} {} {}", type, rpath, output_path);
           input.transferTo(output);
           output.flush();
         }
@@ -92,6 +93,8 @@ public final class SaturnContainerBuilderFelix implements SaturnContainerBuilder
     Files.createDirectories(lib_dir);
     final Path cache_dir = root.resolve("cache");
     Files.createDirectories(cache_dir);
+    final Path log_dir = root.resolve("log");
+    Files.createDirectories(log_dir);
 
     copyBundles(SaturnFelixSystemBundles.hostBundles(), "host", host_dir);
     copyBundles(SaturnFelixSystemBundles.systemBundles(), "system", system_dir);
@@ -100,6 +103,15 @@ public final class SaturnContainerBuilderFelix implements SaturnContainerBuilder
     try (OutputStream output = Files.newOutputStream(config)) {
       final Properties props = SaturnContainerDescriptions.serialize(description);
       props.store(output, "# Automatically generated - DO NOT EDIT");
+    }
+
+    final Path logging = root.resolve("logback.xml");
+    try (OutputStream output = Files.newOutputStream(logging)) {
+      try (InputStream input = SaturnContainerBuilderFelix.class.getResourceAsStream(
+        "/com/io7m/saturn/container/builder/felix/logback-configuration.xml")) {
+        input.transferTo(output);
+        output.flush();
+      }
     }
   }
 }

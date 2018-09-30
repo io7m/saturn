@@ -61,6 +61,16 @@
     </dependency>
     <dependency>
       <groupId>org.apache.felix</groupId>
+      <artifactId>org.apache.felix.shell.remote</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.felix</groupId>
+      <artifactId>org.apache.felix.shell</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.felix</groupId>
       <artifactId>org.apache.felix.scr</artifactId>
       <scope>provided</scope>
     </dependency>
@@ -104,6 +114,8 @@
       org.apache.felix.gogo.command,
       org.apache.felix.gogo.shell,
       org.apache.felix.gogo.runtime,
+      org.apache.felix.shell,
+      org.apache.felix.shell.remote,
       org.apache.felix.scr,
       org.apache.felix.log,
       com.io7m.saturn.container.logservice

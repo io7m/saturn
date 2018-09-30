@@ -19,6 +19,7 @@ package com.io7m.saturn.tests;
 import com.io7m.saturn.container.api.SaturnContainerBuilderType;
 import com.io7m.saturn.container.api.SaturnContainerDescription;
 import com.io7m.saturn.container.builder.felix.SaturnContainerBuilderFelix;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -41,5 +42,14 @@ public final class SaturnContainerBuilderFelixTest
       SaturnContainerDescription.builder()
         .setPath(path)
         .build());
+
+    Assertions.assertAll(
+      () -> Assertions.assertTrue(Files.isDirectory(path.resolve("system"))),
+      () -> Assertions.assertTrue(Files.isDirectory(path.resolve("host"))),
+      () -> Assertions.assertTrue(Files.isDirectory(path.resolve("log"))),
+      () -> Assertions.assertTrue(Files.isDirectory(path.resolve("lib"))),
+      () -> Assertions.assertTrue(Files.isDirectory(path.resolve("cache"))),
+      () -> Assertions.assertTrue(Files.isRegularFile(path.resolve("logback.xml")))
+    );
   }
 }

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<configuration xmlns="http://ch.qos.logback/xml/ns/logback"
+               scan="true"
+               scanPeriod="10 seconds">
+
+  <timestamp key="startTimestamp"
+             datePattern="yyyy-MM-dd_HHmmss"/>
+
+  <appender name="OUTPUT_FILE"
+            class="ch.qos.logback.core.FileAppender">
+    <encoder>
+      <pattern>%d{HH:mm:ss.SSS} [%thread] %level %logger: %msg%n</pattern>
+    </encoder>
+
+    <file>log/log-${startTimestamp}.txt</file>
+  </appender>
+
+  <appender name="ASYNC"
+            class="ch.qos.logback.classic.AsyncAppender">
+    <appender-ref ref="OUTPUT_FILE"/>
+  </appender>
+
+  <root level="DEBUG">
+    <appender-ref ref="ASYNC"/>
+  </root>
+
+</configuration>
+
