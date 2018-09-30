@@ -28,6 +28,11 @@
       <artifactId>com.io7m.saturn.container.logservice</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>com.io7m.saturn.container.launcher.felix</artifactId>
+      <version>${project.version}</version>
+    </dependency>
 
     <dependency>
       <groupId>ch.qos.logback</groupId>
@@ -74,6 +79,8 @@
     <mdep.analyze.skip>true</mdep.analyze.skip>
 
     <com.io7m.saturn.host.artifacts>
+      com.io7m.saturn.container.launcher.felix,
+      com.io7m.saturn.container.api,
       org.apache.felix.framework,
       logback-classic,
       logback-core,

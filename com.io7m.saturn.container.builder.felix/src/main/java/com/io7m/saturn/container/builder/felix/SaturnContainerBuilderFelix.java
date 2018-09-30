@@ -18,6 +18,7 @@ package com.io7m.saturn.container.builder.felix;
 
 import com.io7m.saturn.container.api.SaturnContainerBuilderType;
 import com.io7m.saturn.container.api.SaturnContainerDescription;
+import com.io7m.saturn.container.api.SaturnContainerDescriptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,6 +29,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
+import java.util.Properties;
 
 /**
  * A builder for creating Felix containers.
@@ -93,6 +95,12 @@ public final class SaturnContainerBuilderFelix implements SaturnContainerBuilder
 
     copyBundles(SaturnFelixSystemBundles.hostBundles(), "host", host_dir);
     copyBundles(SaturnFelixSystemBundles.systemBundles(), "system", system_dir);
+
+    final Path config = root.resolve("container.conf");
+    try (OutputStream output = Files.newOutputStream(config)) {
+      final Properties props = SaturnContainerDescriptions.serialize(description);
+      props.store(output, "# Automatically generated - DO NOT EDIT");
+    }
   }
 }
 

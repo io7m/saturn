@@ -35,6 +35,14 @@
     </dependency>
 
     <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+    </dependency>
+    <dependency>
       <groupId>com.beust</groupId>
       <artifactId>jcommander</artifactId>
     </dependency>
@@ -87,9 +95,23 @@
                   <resource>.RSA</resource>
                 </transformer>
               </transformers>
+              <artifactSet>
+                <includes>
+                  <include>${project.groupId}:*</include>
+                  <include>com.beust:jcommander:*</include>
+                  <include>org.slf4j:slf4j-api:*</include>
+                  <include>ch.qos.logback:*:*</include>
+                </includes>
+              </artifactSet>
             </configuration>
           </execution>
         </executions>
+      </plugin>
+
+      <!-- Make jars reproducible -->
+      <plugin>
+        <groupId>io.github.zlika</groupId>
+        <artifactId>reproducible-build-maven-plugin</artifactId>
       </plugin>
     </plugins>
   </build>

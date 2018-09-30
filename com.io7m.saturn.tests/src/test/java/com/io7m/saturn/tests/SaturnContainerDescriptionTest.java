@@ -17,8 +17,16 @@
 package com.io7m.saturn.tests;
 
 import com.io7m.saturn.container.api.SaturnContainerDescription;
+import com.io7m.saturn.container.api.SaturnContainerDescriptions;
 import nl.jqno.equalsverifier.EqualsVerifier;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.Paths;
+import java.util.Properties;
 
 public final class SaturnContainerDescriptionTest
 {
@@ -28,5 +36,47 @@ public final class SaturnContainerDescriptionTest
     EqualsVerifier.forClass(SaturnContainerDescription.class)
       .withNonnullFields("bundles", "path")
       .verify();
+  }
+
+  @Test
+  public void testProperties()
+    throws IOException
+  {
+    final SaturnContainerDescription description_input =
+      SaturnContainerDescription.builder()
+        .addBundles(Paths.get("/a/b/c"))
+        .addBundles(Paths.get("/a/b/d"))
+        .addBundles(Paths.get("/a/b/e"))
+        .setPath(Paths.get("/x/y/z"))
+        .build();
+
+    final Properties properties =
+      SaturnContainerDescriptions.serialize(description_input);
+
+    final SaturnContainerDescription description_output =
+      SaturnContainerDescriptions.parse(FileSystems.getDefault(), properties);
+
+    Assertions.assertEquals(description_input, description_output);
+  }
+
+  @Test
+  public void testPropertiesMissingPath()
+  {
+    final SaturnContainerDescription description_input =
+      SaturnContainerDescription.builder()
+        .addBundles(Paths.get("/a/b/c"))
+        .addBundles(Paths.get("/a/b/d"))
+        .addBundles(Paths.get("/a/b/e"))
+        .setPath(Paths.get("/x/y/z"))
+        .build();
+
+    final Properties properties =
+      SaturnContainerDescriptions.serialize(description_input);
+
+    properties.remove("saturn.path");
+
+    Assertions.assertThrows(IOException.class, () -> {
+      SaturnContainerDescriptions.parse(FileSystems.getDefault(), properties);
+    });
   }
 }
