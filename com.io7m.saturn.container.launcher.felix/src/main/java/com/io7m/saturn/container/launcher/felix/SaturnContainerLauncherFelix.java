@@ -99,6 +99,8 @@ public final class SaturnContainerLauncherFelix implements SaturnContainerLaunch
     config.put(FRAMEWORK_STORAGE_CLEAN, "onFirstInit");
     config.put(LOG_LEVEL_PROP, "999");
     config.put(LOG_LOGGER_PROP, new SaturnContainerFelixLogger());
+
+    configureRemoteShell(description, config);
     exportHostPackages(config);
 
     final Object cast = config;
@@ -124,6 +126,17 @@ public final class SaturnContainerLauncherFelix implements SaturnContainerLaunch
     installApplicationBundles(description, c, bundles);
     startAllBundles(bundles);
     return framework;
+  }
+
+  private static void configureRemoteShell(
+    final SaturnContainerDescription description,
+    final Map<String, Object> config)
+  {
+    final String shell_host = description.remoteShellAddress().getHostName();
+    final String shell_port = Integer.toUnsignedString(description.remoteShellAddress().getPort());
+    LOG.debug("remote shell [{}]:{}", shell_host, shell_port);
+    config.put("osgi.shell.telnet.ip", shell_host);
+    config.put("osgi.shell.telnet.port", shell_port);
   }
 
   private static void startAllBundles(final List<Bundle> bundles)

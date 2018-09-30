@@ -24,7 +24,9 @@ import com.io7m.saturn.container.builder.felix.SaturnContainerBuilderFelix;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.InetSocketAddress;
 import java.nio.file.Path;
+import java.util.List;
 
 /**
  * A command for building containers.
@@ -42,6 +44,21 @@ public final class SaturnCommandBuild extends SaturnCommandRoot
     required = true,
     description = "The output directory")
   private Path path_output;
+
+  @Parameter(
+    names = "--remote-shell-address",
+    description = "The remote shell address")
+  private String remote_shell_address = "127.0.0.1";
+
+  @Parameter(
+    names = "--remote-shell-port",
+    description = "The remote shell port")
+  private int remote_shell_port = 6666;
+
+  @Parameter(
+    names = "--add-bundle",
+    description = "Bundles to be installed")
+  private List<Path> bundles = List.of();
 
   /**
    * Construct a command.
@@ -64,6 +81,11 @@ public final class SaturnCommandBuild extends SaturnCommandRoot
     final SaturnContainerDescription description =
       SaturnContainerDescription.builder()
         .setPath(this.path_output.toAbsolutePath())
+        .addAllBundles(this.bundles)
+        .setRemoteShellAddress(
+          InetSocketAddress.createUnresolved(
+            this.remote_shell_address,
+            this.remote_shell_port))
         .build();
 
     builder.createContainer(description);

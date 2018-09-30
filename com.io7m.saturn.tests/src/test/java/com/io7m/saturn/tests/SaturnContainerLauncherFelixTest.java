@@ -26,6 +26,7 @@ import org.junit.jupiter.api.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.launch.Framework;
 
+import java.net.InetSocketAddress;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
@@ -45,6 +46,7 @@ public final class SaturnContainerLauncherFelixTest
       final SaturnContainerDescription description =
         SaturnContainerDescription.builder()
           .setPath(path)
+          .setRemoteShellAddress(InetSocketAddress.createUnresolved("127.0.0.1", 6000))
           .build();
 
       builder.createContainer(description);

@@ -19,6 +19,7 @@ package com.io7m.saturn.container.api;
 import com.io7m.immutables.styles.ImmutablesStyleType;
 import org.immutables.value.Value;
 
+import java.net.InetSocketAddress;
 import java.nio.file.Path;
 import java.util.Set;
 
@@ -41,4 +42,10 @@ public interface SaturnContainerDescriptionType
    */
 
   Set<Path> bundles();
+
+  /**
+   * @return The address to which to bind the remote shell
+   */
+
+  InetSocketAddress remoteShellAddress();
 }

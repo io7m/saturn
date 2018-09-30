@@ -17,6 +17,7 @@
 package com.io7m.saturn.container.api;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.nio.file.FileSystem;
 import java.nio.file.Path;
 import java.util.Objects;
@@ -56,6 +57,7 @@ public final class SaturnContainerDescriptions
 
     IOException exception = null;
     exception = parsePath(filesystem, properties, builder, exception);
+    exception = parseRemoteShellAddress(properties, builder, exception);
     exception = parseBundles(filesystem, properties, builder, exception);
 
     if (exception != null) {
@@ -63,6 +65,26 @@ public final class SaturnContainerDescriptions
     }
 
     return builder.build();
+  }
+
+  private static IOException parseRemoteShellAddress(
+    final Properties properties,
+    final SaturnContainerDescription.Builder builder,
+    final IOException exception)
+  {
+    final String address = properties.getProperty("saturn.remote_shell_address");
+    if (address == null) {
+      return addException(exception, "Missing key: saturn.remote_shell_address");
+    }
+
+    final String port = properties.getProperty("saturn.remote_shell_port");
+    if (port == null) {
+      return addException(exception, "Missing key: saturn.remote_shell_port");
+    }
+
+    final int port_number = Integer.parseUnsignedInt(port);
+    builder.setRemoteShellAddress(InetSocketAddress.createUnresolved(address, port_number));
+    return exception;
   }
 
   private static IOException parseBundles(
@@ -126,6 +148,13 @@ public final class SaturnContainerDescriptions
 
     final Properties props = new Properties();
     props.setProperty("saturn.path", description.path().toAbsolutePath().toString());
+
+    props.setProperty(
+      "saturn.remote_shell_address",
+      description.remoteShellAddress().getHostName());
+    props.setProperty(
+      "saturn.remote_shell_port",
+      Integer.toUnsignedString(description.remoteShellAddress().getPort()));
 
     int index = 0;
     for (final Path bundle : description.bundles()) {

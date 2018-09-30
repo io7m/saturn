@@ -23,6 +23,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Paths;
@@ -34,7 +35,7 @@ public final class SaturnContainerDescriptionTest
   public void testEquals()
   {
     EqualsVerifier.forClass(SaturnContainerDescription.class)
-      .withNonnullFields("bundles", "path")
+      .withNonnullFields("bundles", "path", "remoteShellAddress")
       .verify();
   }
 
@@ -48,6 +49,7 @@ public final class SaturnContainerDescriptionTest
         .addBundles(Paths.get("/a/b/d"))
         .addBundles(Paths.get("/a/b/e"))
         .setPath(Paths.get("/x/y/z"))
+        .setRemoteShellAddress(InetSocketAddress.createUnresolved("127.0.0.1", 6000))
         .build();
 
     final Properties properties =
@@ -68,12 +70,57 @@ public final class SaturnContainerDescriptionTest
         .addBundles(Paths.get("/a/b/d"))
         .addBundles(Paths.get("/a/b/e"))
         .setPath(Paths.get("/x/y/z"))
+        .setRemoteShellAddress(InetSocketAddress.createUnresolved("127.0.0.1", 6000))
         .build();
 
     final Properties properties =
       SaturnContainerDescriptions.serialize(description_input);
 
     properties.remove("saturn.path");
+
+    Assertions.assertThrows(IOException.class, () -> {
+      SaturnContainerDescriptions.parse(FileSystems.getDefault(), properties);
+    });
+  }
+
+  @Test
+  public void testPropertiesMissingRemoteShellAddress()
+  {
+    final SaturnContainerDescription description_input =
+      SaturnContainerDescription.builder()
+        .addBundles(Paths.get("/a/b/c"))
+        .addBundles(Paths.get("/a/b/d"))
+        .addBundles(Paths.get("/a/b/e"))
+        .setPath(Paths.get("/x/y/z"))
+        .setRemoteShellAddress(InetSocketAddress.createUnresolved("127.0.0.1", 6000))
+        .build();
+
+    final Properties properties =
+      SaturnContainerDescriptions.serialize(description_input);
+
+    properties.remove("saturn.remote_shell_address");
+
+    Assertions.assertThrows(IOException.class, () -> {
+      SaturnContainerDescriptions.parse(FileSystems.getDefault(), properties);
+    });
+  }
+
+  @Test
+  public void testPropertiesMissingRemoteShellPort()
+  {
+    final SaturnContainerDescription description_input =
+      SaturnContainerDescription.builder()
+        .addBundles(Paths.get("/a/b/c"))
+        .addBundles(Paths.get("/a/b/d"))
+        .addBundles(Paths.get("/a/b/e"))
+        .setPath(Paths.get("/x/y/z"))
+        .setRemoteShellAddress(InetSocketAddress.createUnresolved("127.0.0.1", 6000))
+        .build();
+
+    final Properties properties =
+      SaturnContainerDescriptions.serialize(description_input);
+
+    properties.remove("saturn.remote_shell_port");
 
     Assertions.assertThrows(IOException.class, () -> {
       SaturnContainerDescriptions.parse(FileSystems.getDefault(), properties);

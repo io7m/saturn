@@ -23,6 +23,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -41,6 +42,7 @@ public final class SaturnContainerBuilderFelixTest
     builder.createContainer(
       SaturnContainerDescription.builder()
         .setPath(path)
+        .setRemoteShellAddress(InetSocketAddress.createUnresolved("127.0.0.1", 6000))
         .build());
 
     Assertions.assertAll(
