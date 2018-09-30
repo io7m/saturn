@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.io7m.primogenitor</groupId>
+    <artifactId>com.io7m.primogenitor</artifactId>
+    <version>3.0.0-beta0014</version>
+  </parent>
+
+  <groupId>com.io7m.saturn</groupId>
+  <artifactId>com.io7m.saturn</artifactId>
+  <version>0.0.1</version>
+  <packaging>pom</packaging>
+
+  <name>com.io7m.saturn</name>
+  <description>Saturn OSGi container</description>
+  <url>http://github.com/io7m/saturn</url>
+
+  <modules>
+    <module>com.io7m.saturn.container.api</module>
+    <module>com.io7m.saturn.container.builder.felix</module>
+    <module>com.io7m.saturn.tests</module>
+    <module>com.io7m.saturn.container.launcher.felix</module>
+    <module>com.io7m.saturn.container.logservice</module>
+  </modules>
+
+  <properties>
+    <io7m.api.previousVersion>0.0.1</io7m.api.previousVersion>
+    <com.io7m.saturn.logback-classic.version>1.3.0-alpha4</com.io7m.saturn.logback-classic.version>
+    <com.io7m.saturn.slf4j-api.version>1.8.0-beta2</com.io7m.saturn.slf4j-api.version>
+    <com.io7m.saturn.org.apache.felix.scr.version>2.1.8</com.io7m.saturn.org.apache.felix.scr.version>
+    <com.io7m.saturn.org.apache.felix.framework.version>6.0.1</com.io7m.saturn.org.apache.felix.framework.version>
+    <com.io7m.saturn.org.immutables.value.version>2.7.1</com.io7m.saturn.org.immutables.value.version>
+    <com.io7m.saturn.org.apache.felix.log.version>1.2.0</com.io7m.saturn.org.apache.felix.log.version>
+  </properties>
+
+  <inceptionYear>2018</inceptionYear>
+
+  <licenses>
+    <license>
+      <name>ISC License</name>
+      <url>http://io7m.com/license/isc.txt</url>
+    </license>
+  </licenses>
+
+  <scm>
+    <url>https://github.com/io7m/saturn</url>
+    <connection>scm:git:https://github.com/io7m/saturn</connection>
+    <developerConnection>scm:git:https://github.com/io7m/saturn</developerConnection>
+  </scm>
+
+  <developers>
+    <developer>
+      <id>io7m</id>
+      <name>io7m</name>
+      <email>code@io7m.com</email>
+      <url>http://io7m.com</url>
+    </developer>
+  </developers>
+
+  <issueManagement>
+    <url>http://github.com/io7m/saturn/issues</url>
+    <system>GitHub Issues</system>
+  </issueManagement>
+
+  <distributionManagement>
+    <site>
+      <id>io7m.com</id>
+      <name>io7m.com</name>
+      <url>https://www.io7m.com/software/saturn</url>
+    </site>
+    <repository>
+      <id>sonatype-nexus-staging</id>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+    </repository>
+    <snapshotRepository>
+      <id>sonatype-nexus-snapshots</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+    </snapshotRepository>
+  </distributionManagement>
+
+  <ciManagement>
+    <system>Travis CI</system>
+    <url>https://travis-ci.org/io7m/saturn</url>
+  </ciManagement>
+
+  <prerequisites>
+    <maven>3.0.4</maven>
+  </prerequisites>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.osgi</groupId>
+        <artifactId>org.osgi.annotation.bundle</artifactId>
+        <version>1.0.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.osgi</groupId>
+        <artifactId>org.osgi.service.component.annotations</artifactId>
+        <version>1.4.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.osgi</groupId>
+        <artifactId>org.osgi.core</artifactId>
+        <version>6.0.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.osgi</groupId>
+        <artifactId>org.osgi.service.log</artifactId>
+        <version>1.4.0</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.io7m.immutables.style</groupId>
+        <artifactId>com.io7m.immutables.style</artifactId>
+        <version>0.0.1</version>
+      </dependency>
+      <dependency>
+        <groupId>org.immutables</groupId>
+        <artifactId>value</artifactId>
+        <version>${com.io7m.saturn.org.immutables.value.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-classic</artifactId>
+        <version>${com.io7m.saturn.logback-classic.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${com.io7m.saturn.slf4j-api.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>org.apache.felix.scr</artifactId>
+        <version>${com.io7m.saturn.org.apache.felix.scr.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>org.apache.felix.framework</artifactId>
+        <version>${com.io7m.saturn.org.apache.felix.framework.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>org.apache.felix.log</artifactId>
+        <version>${com.io7m.saturn.org.apache.felix.log.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-engine</artifactId>
+        <version>5.3.1</version>
+      </dependency>
+      <dependency>
+        <groupId>nl.jqno.equalsverifier</groupId>
+        <artifactId>equalsverifier</artifactId>
+        <version>3.0</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <!-- Require JDK >= 9 -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <configuration>
+            <source>9</source>
+            <target>9</target>
+            <release>9</release>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
+</project>

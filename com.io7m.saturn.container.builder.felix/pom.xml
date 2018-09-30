@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <artifactId>com.io7m.saturn</artifactId>
+    <groupId>com.io7m.saturn</groupId>
+    <version>0.0.1</version>
+  </parent>
+
+  <artifactId>com.io7m.saturn.container.builder.felix</artifactId>
+
+  <name>com.io7m.saturn.container.builder.felix</name>
+  <description>Saturn OSGi container (Felix container builder)</description>
+  <url>https://www.io7m.com/software/saturn/</url>
+
+  <dependencies>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>com.io7m.saturn.container.api</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>com.io7m.saturn.container.logservice</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.felix</groupId>
+      <artifactId>org.apache.felix.framework</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.felix</groupId>
+      <artifactId>org.apache.felix.scr</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.felix</groupId>
+      <artifactId>org.apache.felix.log</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.service.log</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.io7m.immutables.style</groupId>
+      <artifactId>com.io7m.immutables.style</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.immutables</groupId>
+      <artifactId>value</artifactId>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
+  <properties>
+    <mdep.analyze.skip>true</mdep.analyze.skip>
+
+    <com.io7m.saturn.host.artifacts>
+      org.apache.felix.framework,
+      logback-classic,
+      logback-core,
+      slf4j-api
+    </com.io7m.saturn.host.artifacts>
+
+    <com.io7m.saturn.system.artifacts>
+      org.apache.felix.scr,
+      org.apache.felix.log,
+      com.io7m.saturn.container.logservice
+    </com.io7m.saturn.system.artifacts>
+  </properties>
+
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+
+    <plugins>
+
+      <!-- Copy dependencies into the jar, and create a list of artifacts -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>dependencies-host-copy</id>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <phase>generate-resources</phase>
+            <configuration>
+              <outputDirectory>${project.build.outputDirectory}/com/io7m/saturn/container/builder/felix/host</outputDirectory>
+              <stripClassifier>true</stripClassifier>
+              <stripVersion>true</stripVersion>
+              <includeArtifactIds>
+                ${com.io7m.saturn.host.artifacts}
+              </includeArtifactIds>
+            </configuration>
+          </execution>
+          <execution>
+            <id>dependencies-system-copy</id>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <phase>generate-resources</phase>
+            <configuration>
+              <outputDirectory>${project.build.outputDirectory}/com/io7m/saturn/container/builder/felix/system</outputDirectory>
+              <stripClassifier>true</stripClassifier>
+              <stripVersion>true</stripVersion>
+              <includeArtifactIds>
+                ${com.io7m.saturn.system.artifacts}
+              </includeArtifactIds>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>
