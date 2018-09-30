@@ -23,6 +23,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.launch.Framework;
 import org.osgi.framework.launch.FrameworkFactory;
+import org.osgi.framework.startlevel.BundleStartLevel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -185,7 +186,9 @@ public final class SaturnContainerLauncherFelix implements SaturnContainerLaunch
           .toString();
 
       LOG.debug("installing {}", location);
-      bundles.add(c.installBundle(location));
+      final Bundle bundle = c.installBundle(location);
+      bundles.add(bundle);
+      bundle.adapt(BundleStartLevel.class).setStartLevel(5);
     }
   }
 
@@ -218,7 +221,9 @@ public final class SaturnContainerLauncherFelix implements SaturnContainerLaunch
           .toString();
 
       LOG.debug("installing {} ({})", pack, file);
-      bundles.add(c.installBundle(file));
+      final Bundle bundle = c.installBundle(file);
+      bundles.add(bundle);
+      bundle.adapt(BundleStartLevel.class).setStartLevel(1);
     }
   }
 

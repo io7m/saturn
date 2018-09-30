@@ -28,37 +28,39 @@ import org.osgi.framework.launch.Framework;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
 
 public final class SaturnContainerLauncherFelixTest
 {
   @Test
   public void testCreateEmpty()
-    throws Exception
   {
-    final SaturnContainerBuilderType builder = SaturnContainerBuilderFelix.createBuilder();
-    final SaturnContainerLauncherType launcher = SaturnContainerLauncherFelix.createLauncher();
+    Assertions.assertTimeout(Duration.ofSeconds(15L), () -> {
+      final SaturnContainerBuilderType builder = SaturnContainerBuilderFelix.createBuilder();
+      final SaturnContainerLauncherType launcher = SaturnContainerLauncherFelix.createLauncher();
 
-    final Path path =
-      Files.createTempDirectory("saturn-container-felix-");
+      final Path path =
+        Files.createTempDirectory("saturn-container-felix-");
 
-    final SaturnContainerDescription description =
-      SaturnContainerDescription.builder()
-        .setPath(path)
-        .build();
+      final SaturnContainerDescription description =
+        SaturnContainerDescription.builder()
+          .setPath(path)
+          .build();
 
-    builder.createContainer(description);
+      builder.createContainer(description);
 
-    final Framework framework = launcher.launch(description);
-    Thread.sleep(2_000L);
+      final Framework framework = launcher.launch(description);
+      Thread.sleep(2_000L);
 
-    final Bundle[] bundles = framework.getBundleContext().getBundles();
-    Assertions.assertTrue(bundles.length >= 2, "Bundles are present");
+      final Bundle[] bundles = framework.getBundleContext().getBundles();
+      Assertions.assertTrue(bundles.length >= 2, "Bundles are present");
 
-    for (final Bundle bundle : bundles) {
-      Assertions.assertEquals(Bundle.ACTIVE, bundle.getState());
-    }
+      for (final Bundle bundle : bundles) {
+        Assertions.assertEquals(Bundle.ACTIVE, bundle.getState());
+      }
 
-    framework.stop();
-    framework.waitForStop(1_000L);
+      framework.stop();
+      framework.waitForStop(1_000L);
+    });
   }
 }

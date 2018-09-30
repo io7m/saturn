@@ -34,6 +34,7 @@
       <version>${project.version}</version>
     </dependency>
 
+    <!-- Dependencies that will be present in the host -->
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
@@ -47,6 +48,17 @@
       <artifactId>org.apache.felix.framework</artifactId>
     </dependency>
 
+    <!-- Dependencies that will be present in the container -->
+    <dependency>
+      <groupId>org.apache.felix</groupId>
+      <artifactId>org.apache.felix.gogo.shell</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.felix</groupId>
+      <artifactId>org.apache.felix.gogo.command</artifactId>
+      <scope>provided</scope>
+    </dependency>
     <dependency>
       <groupId>org.apache.felix</groupId>
       <artifactId>org.apache.felix.scr</artifactId>
@@ -63,6 +75,7 @@
       <scope>provided</scope>
     </dependency>
 
+    <!-- Compile-time only annotations -->
     <dependency>
       <groupId>com.io7m.immutables.style</groupId>
       <artifactId>com.io7m.immutables.style</artifactId>
@@ -88,6 +101,9 @@
     </com.io7m.saturn.host.artifacts>
 
     <com.io7m.saturn.system.artifacts>
+      org.apache.felix.gogo.command,
+      org.apache.felix.gogo.shell,
+      org.apache.felix.gogo.runtime,
       org.apache.felix.scr,
       org.apache.felix.log,
       com.io7m.saturn.container.logservice
