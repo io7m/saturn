@@ -19,15 +19,31 @@ package com.io7m.saturn.container.builder.felix;
 import com.io7m.immutables.styles.ImmutablesStyleType;
 import org.immutables.value.Value;
 
+/**
+ * A system bundle.
+ */
+
 @Value.Immutable
 @ImmutablesStyleType
 public interface SaturnFelixSystemBundleType
 {
+  /**
+   * @return The path to the bundle inside a hosting jar file
+   */
+
   @Value.Parameter
   String resourcePath();
 
+  /**
+   * @return The name of the bundle (minus the .jar suffix)
+   */
+
   @Value.Parameter
   String name();
+
+  /**
+   * @return The name of the jar
+   */
 
   @Value.Derived
   default String jarName()

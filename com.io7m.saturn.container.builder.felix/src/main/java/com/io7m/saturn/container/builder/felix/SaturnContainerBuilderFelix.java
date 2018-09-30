@@ -29,6 +29,10 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * A builder for creating Felix containers.
+ */
+
 public final class SaturnContainerBuilderFelix implements SaturnContainerBuilderType
 {
   private static final Logger LOG =
@@ -38,6 +42,12 @@ public final class SaturnContainerBuilderFelix implements SaturnContainerBuilder
   {
 
   }
+
+  /**
+   * Create a new builder.
+   *
+   * @return A container builder
+   */
 
   public static SaturnContainerBuilderType createBuilder()
   {

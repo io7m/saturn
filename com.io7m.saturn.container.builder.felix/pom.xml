@@ -96,6 +96,11 @@
     </resources>
 
     <plugins>
+      <!-- Check code style -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+      </plugin>
 
       <!-- Copy dependencies into the jar, and create a list of artifacts -->
       <plugin>

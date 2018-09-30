@@ -28,6 +28,10 @@ import java.util.stream.Collectors;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
+/**
+ * Lists of system and host bundles.
+ */
+
 public final class SaturnFelixSystemBundles
 {
   private static final Logger LOG =
@@ -38,18 +42,30 @@ public final class SaturnFelixSystemBundles
 
   }
 
+  /**
+   * @return The list of host bundles outside of a standard container
+   *
+   * @throws IOException On I/O errors
+   */
+
   public static List<SaturnFelixSystemBundle> hostBundles()
     throws IOException
   {
-    try (final BufferedReader reader = openHostBundleList()) {
+    try (BufferedReader reader = openHostBundleList()) {
       return loadList(reader, "host");
     }
   }
 
+  /**
+   * @return The list of system bundles inside a standard container
+   *
+   * @throws IOException On I/O errors
+   */
+
   public static List<SaturnFelixSystemBundle> systemBundles()
     throws IOException
   {
-    try (final BufferedReader reader = openSystemBundleList()) {
+    try (BufferedReader reader = openSystemBundleList()) {
       return loadList(reader, "system");
     }
   }
@@ -75,7 +91,7 @@ public final class SaturnFelixSystemBundles
     final String type)
   {
     final List<SaturnFelixSystemBundle> bundles = new ArrayList<>(16);
-    for (final String raw_line : reader.lines().collect(Collectors.toList())) {
+    for (String raw_line : reader.lines().collect(Collectors.toList())) {
       final String name = filterLine(raw_line);
       final String jar_name = name + ".jar";
       final String path =
