@@ -30,6 +30,8 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -97,7 +99,7 @@ public final class SaturnContainerLauncherFelix implements SaturnContainerLaunch
     config.put(FRAMEWORK_STORAGE_CLEAN, "onFirstInit");
     config.put(LOG_LEVEL_PROP, "999");
     config.put(LOG_LOGGER_PROP, new SaturnContainerFelixLogger());
-    exposeSLF4JToContainer(config);
+    exportHostPackages(config);
 
     final Object cast = config;
     @SuppressWarnings("unchecked") final Map<String, String> config_strings = (Map<String, String>) cast;
@@ -229,10 +231,11 @@ public final class SaturnContainerLauncherFelix implements SaturnContainerLaunch
 
   /**
    * Expose the host's SLF4J API to the container. This ensures that any time a package requires the
-   * SLF4J, the actual implementation will be resolved to the one on the host.
+   * SLF4J, the actual implementation will be resolved to the one on the host. Additionally,
+   * export sun.misc in order to allow access to sun.misc.Unsafe.
    */
 
-  private static void exposeSLF4JToContainer(
+  private static void exportHostPackages(
     final Map<String, Object> config)
   {
     final Package package_ = Logger.class.getPackage();
@@ -251,16 +254,22 @@ public final class SaturnContainerLauncherFelix implements SaturnContainerLaunch
         .append(matcher.group(2))
         .toString();
 
-    final String declaration =
-      new StringBuilder(128)
-        .append("org.slf4j; version=")
-        .append(clean_version)
-        .append(",")
-        .append("org.slf4j.*; version=")
-        .append(clean_version)
-        .toString();
+    final Collection<String> exports = new ArrayList<>(8);
+    exports.add(export("org.slf4j", clean_version));
+    exports.add(export("org.slf4j.*", clean_version));
+    exports.add(export("sun.misc", "0.0.0"));
+    exports.add(export("sun.misc.resources", "0.0.0"));
 
-    LOG.debug("SLF4J declaration: {}", declaration);
-    config.put(FRAMEWORK_SYSTEMPACKAGES_EXTRA, declaration);
+    exports.forEach(e -> LOG.debug("export: {}", e));
+    final String joined = String.join(",", exports);
+    LOG.debug("exports joined: {}", joined);
+    config.put(FRAMEWORK_SYSTEMPACKAGES_EXTRA, joined);
+  }
+
+  private static String export(
+    final String package_name,
+    final String version)
+  {
+    return String.format("%s;version=\"%s\"", package_name, version);
   }
 }
