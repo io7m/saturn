@@ -24,6 +24,7 @@
     <module>com.io7m.saturn.tests</module>
     <module>com.io7m.saturn.container.launcher.felix</module>
     <module>com.io7m.saturn.container.logservice</module>
+    <module>com.io7m.saturn.cmdline</module>
   </modules>
 
   <properties>
@@ -122,6 +123,12 @@
         <groupId>org.immutables</groupId>
         <artifactId>value</artifactId>
         <version>${com.io7m.saturn.org.immutables.value.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.beust</groupId>
+        <artifactId>jcommander</artifactId>
+        <version>1.72</version>
       </dependency>
 
       <dependency>
