@@ -24,6 +24,7 @@ import org.osgi.framework.BundleException;
 import org.osgi.framework.launch.Framework;
 import org.osgi.framework.launch.FrameworkFactory;
 import org.osgi.framework.startlevel.BundleStartLevel;
+import org.osgi.framework.startlevel.FrameworkStartLevel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,11 +34,11 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.ServiceLoader;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -111,20 +112,24 @@ public final class SaturnContainerLauncherFelix implements SaturnContainerLaunch
      */
 
     LOG.debug("starting framework");
-
     final Framework framework = frameworks.newFramework(config_strings);
     framework.start();
 
-    final BundleContext c = framework.getBundleContext();
+    LOG.debug("setting framework start level");
+    final BundleContext bundle_context = framework.getBundleContext();
+    final Bundle system_bundle = bundle_context.getBundle();
+    final FrameworkStartLevel level = system_bundle.adapt(FrameworkStartLevel.class);
+    level.setStartLevel(1000);
 
     /*
      * Install all of the bundles.
      */
 
-    final List<Bundle> bundles = new LinkedList<>();
-    installSystemBundles(root_system, c, bundles);
-    installApplicationBundles(description, c, bundles);
-    startAllBundles(bundles);
+    final List<Bundle> system_bundles = installSystemBundles(root_system, bundle_context);
+    startBundles("system", system_bundles);
+
+    final List<Bundle> app_bundles = installApplicationBundles(description, bundle_context);
+    startBundles("application", app_bundles);
     return framework;
   }
 
@@ -139,10 +144,12 @@ public final class SaturnContainerLauncherFelix implements SaturnContainerLaunch
     config.put("osgi.shell.telnet.port", shell_port);
   }
 
-  private static void startAllBundles(final List<Bundle> bundles)
+  private static void startBundles(
+    final String type,
+    final List<Bundle> bundles)
     throws BundleException
   {
-    LOG.debug("starting {} bundles", Integer.valueOf(bundles.size()));
+    LOG.debug("starting {} {} bundles", Integer.valueOf(bundles.size()), type);
 
     for (final Bundle bundle : bundles) {
       LOG.debug("starting: {}", bundle);
@@ -180,20 +187,21 @@ public final class SaturnContainerLauncherFelix implements SaturnContainerLaunch
     }
   }
 
-  private static void installApplicationBundles(
+  private static List<Bundle> installApplicationBundles(
     final SaturnContainerDescription description,
-    final BundleContext c,
-    final List<Bundle> bundles)
+    final BundleContext bundle_context)
     throws BundleException
   {
     LOG.debug("installing application bundles");
 
-    if (description.bundles().isEmpty()) {
+    final Set<Path> bundle_paths = description.bundles();
+    if (bundle_paths.isEmpty()) {
       LOG.debug("no application bundles to install");
-      return;
+      return List.of();
     }
 
-    for (final Path path : description.bundles()) {
+    final List<Bundle> bundles = new ArrayList<>(bundle_paths.size());
+    for (final Path path : bundle_paths) {
       final String location =
         new StringBuilder(64)
           .append("reference:file:")
@@ -201,16 +209,16 @@ public final class SaturnContainerLauncherFelix implements SaturnContainerLaunch
           .toString();
 
       LOG.debug("installing {}", location);
-      final Bundle bundle = c.installBundle(location);
+      final Bundle bundle = bundle_context.installBundle(location);
       bundles.add(bundle);
-      bundle.adapt(BundleStartLevel.class).setStartLevel(5);
+      bundle.adapt(BundleStartLevel.class).setStartLevel(20);
     }
+    return bundles;
   }
 
-  private static void installSystemBundles(
+  private static List<Bundle> installSystemBundles(
     final Path root_system,
-    final BundleContext c,
-    final List<Bundle> bundles)
+    final BundleContext bundle_context)
     throws BundleException, IOException
   {
     LOG.debug("installing system bundles");
@@ -222,9 +230,10 @@ public final class SaturnContainerLauncherFelix implements SaturnContainerLaunch
 
     if (bundle_paths.isEmpty()) {
       LOG.debug("no system bundles to install");
-      return;
+      return List.of();
     }
 
+    final List<Bundle> bundles = new ArrayList<>(bundle_paths.size());
     for (final Path path : bundle_paths) {
       final String pack = path.getFileName().toString();
       final String file =
@@ -236,16 +245,17 @@ public final class SaturnContainerLauncherFelix implements SaturnContainerLaunch
           .toString();
 
       LOG.debug("installing {} ({})", pack, file);
-      final Bundle bundle = c.installBundle(file);
+      final Bundle bundle = bundle_context.installBundle(file);
       bundles.add(bundle);
-      bundle.adapt(BundleStartLevel.class).setStartLevel(1);
+      bundle.adapt(BundleStartLevel.class).setStartLevel(10);
     }
+    return bundles;
   }
 
   /**
    * Expose the host's SLF4J API to the container. This ensures that any time a package requires the
-   * SLF4J, the actual implementation will be resolved to the one on the host. Additionally,
-   * export sun.misc in order to allow access to sun.misc.Unsafe.
+   * SLF4J, the actual implementation will be resolved to the one on the host. Additionally, export
+   * sun.misc in order to allow access to sun.misc.Unsafe.
    */
 
   private static void exportHostPackages(
