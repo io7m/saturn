@@ -18,8 +18,22 @@ package com.io7m.saturn.container.api;
 
 import org.osgi.framework.launch.Framework;
 
+/**
+ * An interface for launching containers.
+ */
+
 public interface SaturnContainerLauncherType
 {
+  /**
+   * Launch a container from the given description.
+   *
+   * @param description The description
+   *
+   * @return A running OSGi framework
+   *
+   * @throws Exception On errors
+   */
+
   Framework launch(
     SaturnContainerDescription description)
     throws Exception;
