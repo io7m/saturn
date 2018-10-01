@@ -142,6 +142,7 @@ public final class SaturnContainerLauncherFelix implements SaturnContainerLaunch
     LOG.debug("remote shell [{}]:{}", shell_host, shell_port);
     config.put("osgi.shell.telnet.ip", shell_host);
     config.put("osgi.shell.telnet.port", shell_port);
+    config.put("gosh.args", "--nointeractive");
   }
 
   private static void startBundles(
